@@ -2,6 +2,12 @@ WAF-Ambro is a project started from [ModSecurity-nginx](https://github.com/Spide
 
 This repo will integrate some changes and automation internaly used.
 
+Creating a WAF-Ambro container:
+
+> cd build/building-container
+>
+> ./buildWAFAmbro.sh
+
 ## References:
 
 https://github.com/coreruleset/modsecurity-crs-docker
