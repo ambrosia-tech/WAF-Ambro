@@ -1,0 +1,29 @@
+FROM ubuntu:bionic
+
+RUN apt-get update && \
+    apt-get install -y \
+    libpcre++ \
+    libssl1.1 \
+    libcurl4 \
+    libgeoip1 \
+    libxml2 \
+    libpcre3 \
+    libyajl2 \
+    libfuzzy2 \
+    -y
+
+RUN mkdir -p /build_tmp/nginx-bin/; \
+    mkdir -p /usr/local/modsecurity/lib; \
+    mkdir -p /build_tmp/modsec/;
+
+COPY ./build_tmp/nginx-bin/ /build_tmp/nginx-bin/
+COPY ./build_tmp/modsec/* /build_tmp/modsec/
+COPY ./build_tmp/libs/libmodsecurity.so.3 /usr/local/modsecurity/lib/libmodsecurity.so.3
+COPY ./build_tmp/libs/liblmdb.so /usr/local/lib/liblmdb.so
+
+COPY ./waf_conf/nginx.conf /build_tmp/nginx-bin/conf/nginx.conf
+COPY ./waf_conf/modsec_main.conf /build_tmp/modsec/modsec_main.conf
+COPY ./waf_conf/modsecurity_override.conf /build_tmp/modsec/modsecurity_override.conf
+RUN chmod 755 /build_tmp/nginx-bin/sbin/nginx
+WORKDIR	/
+ENTRYPOINT ["./build_tmp/nginx-bin/sbin/nginx", "-g", "daemon off;"]

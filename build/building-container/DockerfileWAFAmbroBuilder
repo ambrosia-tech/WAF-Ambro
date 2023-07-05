@@ -1,0 +1,63 @@
+#https://github.com/coreruleset/modsecurity-crs-docker/blob/develop/nginx/Dockerfile
+FROM ubuntu:bionic
+ARG MODSEC_VERSION="3.0.9" \
+    LMDB_VERSION="0.9.29" \
+    NGINX_VERSION="1.25.1"
+
+RUN apt-get update && \
+    apt-get install -y \
+    g++ \
+    apt-utils \
+    autoconf \
+    automake \
+    build-essential \
+    libcurl4-openssl-dev \
+    libgeoip-dev \
+    libpcre++-dev \
+    libpcre3-dev \
+    libpcre2-dev \
+    libtool \
+    libssl-dev \
+    libxml2-dev \
+    libyajl-dev \
+    pkgconf \
+    wget \
+    zlib1g-dev \
+    ssdeep \
+    git \
+    curl \
+    -y 
+
+#ssdeep
+RUN set -eux; \
+    mkdir -p /tmp/ssdeep; \
+    cd /tmp/ssdeep; \
+    git clone https://github.com/ssdeep-project/ssdeep; \
+    cd ssdeep/; \
+    ./bootstrap; \
+    ./configure && make && make install
+
+#lmdb
+RUN set -eux; \
+    git clone https://github.com/LMDB/lmdb --branch LMDB_${LMDB_VERSION} --depth 1; \
+    make -C lmdb/libraries/liblmdb install
+
+#modsecurity
+RUN set -eux; \
+    git clone https://github.com/SpiderLabs/ModSecurity --branch v"${MODSEC_VERSION}" --depth 1 --recursive; \
+    cd ModSecurity; \
+    ARCH=$(gcc -print-multiarch); \
+    sed -ie "s/i386-linux-gnu/${ARCH}/g" build/ssdeep.m4; \
+    sed -ie "s/i386-linux-gnu/${ARCH}/g" build/pcre2.m4; \
+    ./build.sh; \
+    ./configure --with-yajl --with-ssdeep --with-geoip --with-pcre2 --enable-silent-rules; \
+    make install;
+
+#nginx
+RUN wget -O /tmp/nginx.tar.gz https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+    mkdir -p /tmp/release/nginx && \
+    tar -xvzf /tmp/nginx.tar.gz -C /tmp/release/nginx --strip-components=1
+
+RUN mkdir -p /data/build
+COPY ./data/* /data/build/
+ENTRYPOINT ["/data/build/build-ngx.sh"]
