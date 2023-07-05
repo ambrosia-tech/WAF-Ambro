@@ -3,8 +3,8 @@ SCRIPT_PATH=$(readlink -f "$0")
 SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
 
 
-NGNIX_MODSEC_SRC_DIR=/drives/work_4t1/work/dev_repos_ambro/WAF-Ambro/ngx-http-modsecurity
-BUILD_TMP=/drives/work_4t1/work/dev_repos_ambro/WAF-Ambro/build/building-container/build_tmp
+NGNIX_MODSEC_SRC_DIR=$SCRIPT_DIR/../../ngx-http-modsecurity
+BUILD_TMP=$SCRIPT_DIR/build_tmp
 
 #build modsecurity
 sudo DOCKER_BUILDKIT=1 docker build --progress=plain -t waf-ambro-builder -f DockerfileWAFAmbroBuilder .
