@@ -1,0 +1,24 @@
+name: Ambro Labeler for Issues
+on:
+  issues:
+    types:
+      - reopened
+      - opened
+jobs:
+  label_issues:
+    runs-on: ambro-runner-prod
+    permissions:
+      issues: write
+    steps:
+      - run: echo "Issue Title:${{ github.event.issue.title }}"
+      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."      
+      - uses: actions/github-script@v6    
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ["triage"]
+            })
+            
