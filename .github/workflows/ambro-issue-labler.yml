@@ -1,4 +1,4 @@
-name: Ambro Labeler for Issues
+name: Ambro Labler for Issues
 on:
   issues:
     types:
