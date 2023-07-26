@@ -8,6 +8,10 @@ Creating a WAF-Ambro container:
 >
 > ./buildWAFAmbro.sh
 
+## Auto rule update
+
+Production rules are automatically added when containers are created
+
 ## References:
 
 https://github.com/coreruleset/modsecurity-crs-docker
