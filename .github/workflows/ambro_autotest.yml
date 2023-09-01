@@ -9,6 +9,7 @@ env:
   AWS_REGION: "us-east-2"
   ROLE_SESSION_NAME: "ambro-github-actions"
   BUCKET_NAME: "ambro-workflow-docker-prod"
+  TEST_CONFIG: "test-parameters-auth"
 
 jobs:
   ambro-testing-on-issue:
@@ -27,11 +28,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Prepare container for testing
+        working-directory: ngx-http-modsecurity/tests
         run: |
-          aws s3 cp s3://${{ env.BUCKET_NAME }}/Dockerfile .
+          aws s3 cp s3://${{ env.BUCKET_NAME }}/${{ env.TEST_CONFIG }} ${{ env.TEST_CONFIG }}
       
-      - name: Build Docker image
-        run: |
-          docker build -t ambrosia-prod-testing .
+      - name: Run Ambro WAF tests
+        working-directory: ngx-http-modsecurity/tests
+        run: chmod +x ./test.sh && ./test.sh ${{ env.TEST_CONFIG }}
 
 
