@@ -3,7 +3,7 @@ on: push
 
 env:
   AWS_ACCOUNT_ID: "556061159831"
-  AWS_REGION: "us-east-2"
+  AWS_REGION: "us-east-1"
   ROLE_SESSION_NAME: "ambro-github-actions"
   BUCKET_NAME: "ambro-workflow-docker-prod"
   TEST_CONFIG: "test-parameters-auth"
