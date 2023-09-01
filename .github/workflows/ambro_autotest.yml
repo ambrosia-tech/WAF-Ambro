@@ -1,0 +1,37 @@
+name: Ambro Testing On Issues
+on:
+  issues:
+    types:
+      - reopened
+      - opened
+env:
+  AWS_ACCOUNT_ID: "556061159831" # <~~~~ Will change this
+  AWS_REGION: "us-east-2"
+  ROLE_SESSION_NAME: "ambro-github-actions"
+  BUCKET_NAME: "ambro-workflow-docker-prod"  # Update this with your bucket name
+
+jobs:
+  ambro-testing-on-issue:
+    permissions:
+      id-token: write
+    runs-on: ambro-runner-prod
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/github-actions/ambro_role_oicd_s3_access
+          role-session-name: ${{ env.ROLE_SESSION_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Prepare container for testing
+        run: |
+          aws s3 cp s3://${{ env.BUCKET_NAME }}/Dockerfile .
+      
+      - name: Build Docker image
+        run: |
+          docker build -t ambrosia-prod-testing .
+
+
