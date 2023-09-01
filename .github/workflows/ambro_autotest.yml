@@ -1,9 +1,6 @@
-name: Ambro Testing On Issues
-on:
-  issues:
-    types:
-      - reopened
-      - opened
+name: Ambro AutoTesting On Push
+on: push
+
 env:
   AWS_ACCOUNT_ID: "556061159831"
   AWS_REGION: "us-east-2"
