@@ -5,10 +5,10 @@ on:
       - reopened
       - opened
 env:
-  AWS_ACCOUNT_ID: "556061159831" # <~~~~ Will change this
+  AWS_ACCOUNT_ID: "556061159831"
   AWS_REGION: "us-east-2"
   ROLE_SESSION_NAME: "ambro-github-actions"
-  BUCKET_NAME: "ambro-workflow-docker-prod"  # Update this with your bucket name
+  BUCKET_NAME: "ambro-workflow-docker-prod"
 
 jobs:
   ambro-testing-on-issue:
